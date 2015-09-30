@@ -8,10 +8,10 @@
     "build": "babel src.jsx -o index.js",
     "demo": "webpack demo/jsx/demo.jsx demo/js/demo.js --module-bind 'jsx=babel?stage=0' -w",
     "test": "babel-node test/index.js | tap-spec",
-    "test:watch": "nodemon --exec \"babel-node test/lib/index.js | tap-spec\" -w test/lib/index.js",
+    "test:watch": "nodemon --exec \"babel-node test/index.js | tap-spec\" -w test/index.js",
     "travis": "npm run coveralls",
     "prepublish": "npm run build",
-    "coverage": "babel-node node_modules/.bin/isparta cover --report lcovonly test/lib/index.js | tap-spec",
+    "coverage": "babel-node node_modules/.bin/isparta cover --report lcovonly test/index.js | tap-spec",
     "coveralls": "npm run coverage && coveralls < coverage/lcov.info && rimraf ./coverage"
   },
   "repository": {
