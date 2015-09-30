@@ -1,3 +1,7 @@
+.foma-warning-wrapper {
+    display: inline-block;
+}
+
 .foma-warning {
     padding: 15px 20px;
     background: #fffdc7;
@@ -5,6 +9,7 @@
     box-shadow: 0 2px 3px rgba(77, 47, 0, 0.1);
     margin-bottom: 10px;
     border-radius: 5px;
+    display: block;
 }
 
 .foma-warning__item {

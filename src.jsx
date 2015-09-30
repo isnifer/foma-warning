@@ -1,4 +1,6 @@
-import { Component, PropTypes } from 'react';
+import React from 'react';
+
+const { Component, PropTypes } = React;
 
 export default class FomaWarning extends Component {
 
@@ -43,6 +45,10 @@ export default class FomaWarning extends Component {
             [this.props.className, this.props.className + '__item'] : ['foma-warning', 'foma-warning__item'];
         let isParent = className.indexOf(classNames[0]) > -1 || className.indexOf(classNames[1]) > -1;
 
+        if (!isParent && this.props.items.length) {
+            document.querySelector('[name="' + this.props.items[0].fieldName + '"]').focus();
+        }
+
         this.setState({visible: true});
     }
 
@@ -52,21 +58,23 @@ export default class FomaWarning extends Component {
 
         if (items.length && visible) {
             return (
-                <div onClick={::this.detectClick}>
-                    <div className={this.props.className || 'foma-warning'}>
+                <span
+                    className={this.props.className ? this.props.className + 'wrapper' : 'foma-warning-wrapper'}
+                    onClick={::this.detectClick}>
+                    <span className={this.props.className || 'foma-warning'}>
                         {this.props.message || 'Необходимо указать:'} {items.map((item, i) => {
                             return this.renderItem(item, i);
                         })}
-                    </div>
+                    </span>
                     {this.props.children}
-                </div>
+                </span>
             );
         }
 
         return (
-            <div onClick={::this.detectClick}>
+            <span onClick={::this.detectClick}>
                 {this.props.children}
-            </div>
+            </span>
         );
     }
 }
