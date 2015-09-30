@@ -1,6 +1,4 @@
-import React from 'react';
-
-const { Component, PropTypes } = React;
+import { Component, PropTypes } from 'react';
 
 export default class FomaWarning extends Component {
 
@@ -23,7 +21,7 @@ export default class FomaWarning extends Component {
 
     renderItem (item, i) {
 
-        var onClick = () => {
+        let onClick = () => {
             document.querySelector('[name="' + item.fieldName + '"]').focus();
         };
 
