@@ -1,0 +1,52 @@
+{
+  "name": "foma-warning",
+  "version": "0.0.1",
+  "description": "React component for warning invalid form fields",
+  "main": "index.js",
+  "scripts": {
+    "watch": "babel src.jsx -o index.js -w",
+    "build": "babel src.jsx -o index.js",
+    "demo": "webpack demo/jsx/demo.jsx demo/js/demo.js --module-bind 'jsx=babel?stage=0' -w",
+    "test": "babel-node test/index.js | tap-spec",
+    "test:watch": "nodemon --exec \"babel-node test/lib/index.js | tap-spec\" -w test/lib/index.js",
+    "travis": "npm run coveralls",
+    "prepublish": "npm run build",
+    "coverage": "babel-node node_modules/.bin/isparta cover --report lcovonly test/lib/index.js | tap-spec",
+    "coveralls": "npm run coverage && coveralls < coverage/lcov.info && rimraf ./coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/isnifer/foma-warning.git"
+  },
+  "keywords": [
+    "react",
+    "validation",
+    "warning"
+  ],
+  "author": "Anton Kuznetsov <isnifer@gmail.com> (https://github.com/isnifer)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/isnifer/foma-warning/issues"
+  },
+  "homepage": "https://github.com/isnifer/foma-warning#readme",
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "babel-core": "^5.8.25",
+    "babel-loader": "^5.3.2",
+    "coveralls": "^2.11.4",
+    "gulp": "^3.9.0",
+    "gulp-connect": "^2.2.0",
+    "isparta": "^3.0.4",
+    "istanbul": "^0.3.21",
+    "jsdom": "^6.5.1",
+    "rimraf": "^2.4.3",
+    "tap-spec": "^4.1.0",
+    "tape": "^4.2.0",
+    "webpack": "^1.12.2"
+  },
+  "dependencies": {
+    "foma": "latest",
+    "react": "latest",
+    "valya": "latest"
+  }
+}

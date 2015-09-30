@@ -1,0 +1,14 @@
+.foma-warning {
+    padding: 15px 20px;
+    background: #fffdc7;
+    border: 1px solid #e1d282;
+    box-shadow: 0 2px 3px rgba(77, 47, 0, 0.1);
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.foma-warning__item {
+    color: #50808a;
+    text-decoration: underline;
+    cursor: pointer;
+}
