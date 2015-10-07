@@ -1,6 +1,6 @@
 {
   "name": "foma-warning",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "React component for warning invalid form fields",
   "main": "index.js",
   "scripts": {
