@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Valya from 'valya';
 import Foma from 'foma';
 import FomaWarning from '../../index';
@@ -201,4 +202,4 @@ class Demo extends Component {
     }
 }
 
-React.render(<Demo />, document.querySelector('.main'));
+ReactDOM.render(<Demo />, document.querySelector('.main'));
