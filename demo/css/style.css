@@ -1,7 +1,3 @@
-.foma-warning-wrapper {
-    display: inline-block;
-}
-
 .foma-warning {
     padding: 15px 20px;
     background: #fffdc7;
@@ -16,4 +12,40 @@
     color: #50808a;
     text-decoration: underline;
     cursor: pointer;
+}
+
+.chrome,
+.firefox,
+.opera,
+.safari {
+    color: #fff;
+    font-size: 3em;
+    text-align: center;
+    line-height: 100px;
+    width: 200px;
+    display: inline-block;
+    margin: 0 5px 5px 0;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.chrome {
+    background: green;
+}
+
+.firefox {
+    background: orange;
+}
+
+.opera {
+    background: red;
+}
+
+.safari {
+    background: blue;
+}
+
+.selected {
+    content: 'IE';
+    background: black;
 }

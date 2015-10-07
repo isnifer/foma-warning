@@ -76,8 +76,31 @@
 	var PropTypes = _react2['default'].PropTypes;
 
 	var requiredFields = {
-	    username: 'username',
-	    company: 'company'
+	    company: {
+	        name: 'company'
+	    },
+	    username: {
+	        name: 'username'
+	    },
+	    browser: {
+	        name: 'browser',
+	        handler: function handler() {
+	            alert('Set your browser');
+	        }
+	    }
+	};
+
+	var standardValidator = {
+	    validator: function validator(value, params) {
+	        if (value) {
+	            return Promise.resolve();
+	        }
+
+	        return Promise.reject(params.message);
+	    },
+	    params: {
+	        message: 'Field is required'
+	    }
 	};
 
 	var Validator = (function (_Component) {
@@ -144,7 +167,9 @@
 
 	        this.state = {
 	            username: null,
-	            company: null
+	            company: null,
+	            browser: null,
+	            fomaWarning: false
 	        };
 	    }
 
@@ -161,11 +186,18 @@
 	    }, {
 	        key: 'submitForm',
 	        value: function submitForm(e) {
-	            e.preventDefault();
-
-	            if (this.props.isValid) {
+	            if (this.props.isInvalid) {
+	                this.setState({ fomaWarning: true });
+	            } else {
 	                alert('Form successfully send');
 	            }
+
+	            return e.preventDefault();
+	        }
+	    }, {
+	        key: 'setBrowser',
+	        value: function setBrowser(browser) {
+	            this.setState({ browser: browser });
 	        }
 	    }, {
 	        key: 'render',
@@ -177,8 +209,7 @@
 	                {
 	                    className: 'demo',
 	                    style: { width: '500px', padding: '50px 0 0 50px' },
-	                    noValidate: true,
-	                    onSubmit: this.submitForm.bind(this) },
+	                    noValidate: true },
 	                _react2['default'].createElement(
 	                    'div',
 	                    { className: 'form-group' },
@@ -193,24 +224,13 @@
 	                                    name: 'company'
 	                                });
 	                            },
-	                            validators: [{
-	                                validator: function validator(value, params) {
-	                                    if (value) {
-	                                        return Promise.resolve();
-	                                    }
-
-	                                    return Promise.reject(params.message);
-	                                },
-	                                params: {
-	                                    message: 'Field is required'
-	                                }
-	                            }],
+	                            validators: [standardValidator],
 	                            silentInitValidation: true },
 	                        _react2['default'].createElement('input', {
 	                            type: 'text',
 	                            id: 'company',
 	                            name: 'company',
-	                            placeholder: requiredFields.company,
+	                            placeholder: requiredFields.company.name,
 	                            className: 'form-control',
 	                            value: this.state.company,
 	                            onChange: this.setCompany.bind(this) })
@@ -230,24 +250,13 @@
 	                                    name: 'username'
 	                                });
 	                            },
-	                            validators: [{
-	                                validator: function validator(value, params) {
-	                                    if (value) {
-	                                        return Promise.resolve();
-	                                    }
-
-	                                    return Promise.reject(params.message);
-	                                },
-	                                params: {
-	                                    message: 'Field is required'
-	                                }
-	                            }],
+	                            validators: [standardValidator],
 	                            silentInitValidation: true },
 	                        _react2['default'].createElement('input', {
 	                            type: 'text',
 	                            id: 'username',
 	                            name: 'username',
-	                            placeholder: requiredFields.username,
+	                            placeholder: requiredFields.username.name,
 	                            className: 'form-control',
 	                            value: this.state.username,
 	                            onChange: this.setUsername.bind(this) })
@@ -257,22 +266,56 @@
 	                    'div',
 	                    { className: 'form-group' },
 	                    _react2['default'].createElement(
-	                        _index2['default'],
+	                        Validator,
 	                        {
-	                            message: 'These fields are required:',
-	                            items: this.props.invalidFields.map(function (e) {
-	                                return {
-	                                    fieldName: e,
-	                                    name: requiredFields[e]
-	                                };
-	                            }) },
-	                        _react2['default'].createElement(
-	                            'button',
-	                            {
-	                                type: 'submit',
-	                                className: 'btn btn-success' + (this.props.isInvalid ? ' disabled' : '') },
-	                            'Save'
-	                        )
+	                            value: this.state.browser,
+	                            onEnd: function (isValid, message) {
+	                                _this.props.setValidationInfo({
+	                                    isValid: isValid,
+	                                    message: message,
+	                                    name: 'browser'
+	                                });
+	                            },
+	                            validators: [standardValidator],
+	                            silentInitValidation: true },
+	                        ['chrome', 'firefox', 'opera', 'safari'].map(function (browser) {
+	                            return _react2['default'].createElement(
+	                                'div',
+	                                {
+	                                    className: browser + (_this.state.browser === browser ? ' selected' : ''),
+	                                    onClick: _this.setBrowser.bind(_this, browser),
+	                                    key: browser },
+	                                browser
+	                            );
+	                        })
+	                    )
+	                ),
+	                _react2['default'].createElement(
+	                    'div',
+	                    { className: 'form-group' },
+	                    _react2['default'].createElement(_index2['default'], {
+	                        message: 'These fields are required:',
+	                        items: this.props.invalidFields.map(function (e) {
+	                            return {
+	                                fieldName: e,
+	                                name: requiredFields[e].name,
+	                                handler: requiredFields[e].handler || null
+	                            };
+	                        }),
+	                        visible: this.state.fomaWarning }),
+	                    _react2['default'].createElement(
+	                        'button',
+	                        {
+	                            type: 'submit',
+	                            className: 'btn btn-success' + (this.props.isInvalid ? ' disabled' : ''),
+	                            onClick: this.submitForm.bind(this) },
+	                        'Save'
+	                    ),
+	                    ' ',
+	                    _react2['default'].createElement(
+	                        'button',
+	                        { type: 'button', className: 'btn btn-secondary' },
+	                        'Cancel'
 	                    )
 	                )
 	            );
@@ -22451,24 +22494,26 @@
 	var FomaWarning = (function (_Component) {
 	    _inherits(FomaWarning, _Component);
 
-	    function FomaWarning(props) {
+	    function FomaWarning() {
 	        _classCallCheck(this, FomaWarning);
 
-	        _get(Object.getPrototypeOf(FomaWarning.prototype), 'constructor', this).call(this, props);
-
-	        this.state = {
-	            visible: false
-	        };
+	        _get(Object.getPrototypeOf(FomaWarning.prototype), 'constructor', this).apply(this, arguments);
 	    }
 
 	    _createClass(FomaWarning, [{
+	        key: 'onClickHandler',
+	        value: function onClickHandler(item) {
+	            var field = document.querySelector('[name="' + item.fieldName + '"]');
+
+	            if (item.handler) {
+	                item.handler();
+	            } else if (field) {
+	                field.focus();
+	            }
+	        }
+	    }, {
 	        key: 'renderItem',
 	        value: function renderItem(item, i) {
-
-	            var onClick = function onClick() {
-	                document.querySelector('[name="' + item.fieldName + '"]').focus();
-	            };
-
 	            return _react2['default'].createElement(
 	                'span',
 	                { key: i },
@@ -22476,63 +22521,37 @@
 	                _react2['default'].createElement(
 	                    'span',
 	                    {
-	                        className: this.props.className ? this.props.className + '__item' : 'foma-warning__item',
-	                        onClick: onClick },
+	                        className: 'foma-warning__item',
+	                        onClick: this.onClickHandler.bind(this, item) },
 	                    item.name
 	                )
 	            );
-	        }
-	    }, {
-	        key: 'detectClick',
-	        value: function detectClick(e) {
-	            var className = e.target.className;
-	            var classNames = this.props.className ? [this.props.className, this.props.className + '__item'] : ['foma-warning', 'foma-warning__item'];
-	            var isParent = className.indexOf(classNames[0]) > -1 || className.indexOf(classNames[1]) > -1;
-
-	            if (!isParent && this.props.items.length) {
-	                document.querySelector('[name="' + this.props.items[0].fieldName + '"]').focus();
-	            }
-
-	            this.setState({ visible: true });
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _this = this;
 
-	            var items = this.props.items;
-	            var visible = this.props.hasOwnProperty('visible') ? this.props.visible : this.state.visible;
-
-	            if (items.length && visible) {
+	            var props = this.props;
+	            if (props.items.length && props.visible) {
 	                return _react2['default'].createElement(
 	                    'span',
-	                    {
-	                        className: this.props.className ? this.props.className + 'wrapper' : 'foma-warning-wrapper',
-	                        onClick: this.detectClick.bind(this) },
-	                    _react2['default'].createElement(
-	                        'span',
-	                        { className: this.props.className || 'foma-warning' },
-	                        this.props.message || 'Необходимо указать:',
-	                        ' ',
-	                        items.map(function (item, i) {
-	                            return _this.renderItem(item, i);
-	                        })
-	                    ),
-	                    this.props.children
+	                    { className: 'foma-warning' },
+	                    props.message || 'Необходимо указать:',
+	                    ' ',
+	                    props.items.map(function (item, i) {
+	                        return _this.renderItem(item, i);
+	                    })
 	                );
 	            }
 
-	            return _react2['default'].createElement(
-	                'span',
-	                { onClick: this.detectClick.bind(this) },
-	                this.props.children
-	            );
+	            return null;
 	        }
 	    }], [{
 	        key: 'propTypes',
 	        value: {
 	            items: PropTypes.array.isRequired,
-	            visible: PropTypes.bool
+	            visible: PropTypes.bool.isRequired
 	        },
 	        enumerable: true
 	    }, {

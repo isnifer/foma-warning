@@ -4,77 +4,50 @@ const { Component, PropTypes } = React;
 
 export default class FomaWarning extends Component {
 
-    constructor (props) {
-        super(props);
-
-        this.state = {
-            visible: false
-        };
-    }
-
     static propTypes = {
         items: PropTypes.array.isRequired,
-        visible: PropTypes.bool
+        visible: PropTypes.bool.isRequired
     };
 
     static defaultProps = {
         items: []
     };
 
+    onClickHandler (item) {
+        var field = document.querySelector('[name="' + item.fieldName + '"]');
+
+        if (item.handler) {
+            item.handler();
+        } else if (field) {
+            field.focus();
+        }
+    };
+
     renderItem (item, i) {
-
-        let onClick = () => {
-            document.querySelector('[name="' + item.fieldName + '"]').focus();
-        };
-
         return (
             <span key={i}>
                 {i === 0 ? '' : ', '}
                 <span
-                    className={this.props.className ? this.props.className + '__item' : 'foma-warning__item'}
-                    onClick={onClick}>
+                    className="foma-warning__item"
+                    onClick={this.onClickHandler.bind(this, item)}>
                     {item.name}
                 </span>
             </span>
         );
     }
 
-    detectClick (e) {
-        var className = e.target.className;
-        var classNames = this.props.className ?
-            [this.props.className, this.props.className + '__item'] : ['foma-warning', 'foma-warning__item'];
-        let isParent = className.indexOf(classNames[0]) > -1 || className.indexOf(classNames[1]) > -1;
-
-        if (!isParent && this.props.items.length) {
-            document.querySelector('[name="' + this.props.items[0].fieldName + '"]').focus();
-        }
-
-        this.setState({visible: true});
-    }
-
     render () {
-        var items = this.props.items;
-        var visible = this.props.hasOwnProperty('visible') ? this.props.visible : this.state.visible;
-
-        if (items.length && visible) {
+        const props = this.props;
+        if (props.items.length && props.visible) {
             return (
-                <span
-                    className={this.props.className ? this.props.className + 'wrapper' : 'foma-warning-wrapper'}
-                    onClick={::this.detectClick}>
-                    <span className={this.props.className || 'foma-warning'}>
-                        {this.props.message || 'Необходимо указать:'} {items.map((item, i) => {
-                            return this.renderItem(item, i);
-                        })}
-                    </span>
-                    {this.props.children}
+                <span className="foma-warning">
+                    {props.message || 'Необходимо указать:'} {props.items.map((item, i) => {
+                        return this.renderItem(item, i);
+                    })}
                 </span>
             );
         }
 
-        return (
-            <span onClick={::this.detectClick}>
-                {this.props.children}
-            </span>
-        );
+        return null;
     }
 }

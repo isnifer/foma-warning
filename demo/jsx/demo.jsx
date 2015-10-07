@@ -6,8 +6,31 @@ import FomaWarning from '../../index';
 const { Component, PropTypes } = React;
 
 const requiredFields = {
-    username: 'username',
-    company: 'company'
+    company: {
+        name: 'company'
+    },
+    username: {
+        name: 'username'
+    },
+    browser: {
+        name: 'browser',
+        handler: () => {
+            alert('Set your browser');
+        }
+    }
+};
+
+const standardValidator = {
+    validator (value, params) {
+        if (value) {
+            return Promise.resolve();
+        }
+
+        return Promise.reject(params.message);
+    },
+    params: {
+        message: 'Field is required'
+    }
 };
 
 @Valya
@@ -48,7 +71,9 @@ class Demo extends Component {
 
         this.state = {
             username: null,
-            company: null
+            company: null,
+            browser: null,
+            fomaWarning: false
         };
     }
 
@@ -61,11 +86,17 @@ class Demo extends Component {
     }
 
     submitForm (e) {
-        e.preventDefault();
-
-        if (this.props.isValid) {
+        if (this.props.isInvalid) {
+            this.setState({fomaWarning: true});
+        } else {
             alert('Form successfully send');
         }
+
+        return e.preventDefault();
+    }
+
+    setBrowser (browser) {
+        this.setState({browser: browser});
     }
 
     render () {
@@ -73,8 +104,7 @@ class Demo extends Component {
             <form
                 className="demo"
                 style={{width: '500px', padding: '50px 0 0 50px'}}
-                noValidate
-                onSubmit={::this.submitForm}>
+                noValidate>
                 <div className="form-group">
                     <Validator
                         value={this.state.company}
@@ -85,26 +115,13 @@ class Demo extends Component {
                                 name: 'company'
                             });
                         }}
-                        validators={[
-                            {
-                                validator (value, params) {
-                                    if (value) {
-                                        return Promise.resolve();
-                                    }
-
-                                    return Promise.reject(params.message);
-                                },
-                                params: {
-                                    message: 'Field is required'
-                                }
-                            }
-                        ]}
+                        validators={[standardValidator]}
                         silentInitValidation={true}>
                         <input
                             type="text"
                             id="company"
                             name="company"
-                            placeholder={requiredFields.company}
+                            placeholder={requiredFields.company.name}
                             className="form-control"
                             value={this.state.company}
                             onChange={::this.setCompany} />
@@ -120,29 +137,40 @@ class Demo extends Component {
                                 name: 'username'
                             });
                         }}
-                        validators={[
-                            {
-                                validator (value, params) {
-                                    if (value) {
-                                        return Promise.resolve();
-                                    }
-
-                                    return Promise.reject(params.message);
-                                },
-                                params: {
-                                    message: 'Field is required'
-                                }
-                            }
-                        ]}
+                        validators={[standardValidator]}
                         silentInitValidation={true}>
                         <input
                             type="text"
                             id="username"
                             name="username"
-                            placeholder={requiredFields.username}
+                            placeholder={requiredFields.username.name}
                             className="form-control"
                             value={this.state.username}
                             onChange={::this.setUsername} />
+                    </Validator>
+                </div>
+                <div className="form-group">
+                    <Validator
+                        value={this.state.browser}
+                        onEnd={(isValid, message) => {
+                            this.props.setValidationInfo({
+                                isValid: isValid,
+                                message: message,
+                                name: 'browser'
+                            });
+                        }}
+                        validators={[standardValidator]}
+                        silentInitValidation={true}>
+                        {['chrome', 'firefox', 'opera', 'safari'].map((browser) => {
+                            return (
+                                <div
+                                    className={browser + (this.state.browser === browser ? ' selected' : '')}
+                                    onClick={this.setBrowser.bind(this, browser)}
+                                    key={browser}>
+                                    {browser}
+                                </div>
+                            );
+                        })}
                     </Validator>
                 </div>
                 <div className="form-group">
@@ -151,15 +179,22 @@ class Demo extends Component {
                         items={this.props.invalidFields.map(function (e) {
                             return {
                                 fieldName: e,
-                                name: requiredFields[e]
+                                name: requiredFields[e].name,
+                                handler: requiredFields[e].handler || null
                             }
-                        })}>
-                        <button
-                            type="submit"
-                            className={'btn btn-success' + (this.props.isInvalid ? ' disabled' : '')}>
-                            Save
-                        </button>
+                        })}
+                        visible={this.state.fomaWarning}>
                     </FomaWarning>
+                    <button
+                        type="submit"
+                        className={'btn btn-success' + (this.props.isInvalid ? ' disabled' : '')}
+                        onClick={::this.submitForm}>
+                        Save
+                    </button>
+                    {' '}
+                    <button type="button" className="btn btn-secondary">
+                        Cancel
+                    </button>
                 </div>
             </form>
         );

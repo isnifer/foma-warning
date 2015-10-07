@@ -24,24 +24,26 @@ var PropTypes = _react2['default'].PropTypes;
 var FomaWarning = (function (_Component) {
     _inherits(FomaWarning, _Component);
 
-    function FomaWarning(props) {
+    function FomaWarning() {
         _classCallCheck(this, FomaWarning);
 
-        _get(Object.getPrototypeOf(FomaWarning.prototype), 'constructor', this).call(this, props);
-
-        this.state = {
-            visible: false
-        };
+        _get(Object.getPrototypeOf(FomaWarning.prototype), 'constructor', this).apply(this, arguments);
     }
 
     _createClass(FomaWarning, [{
+        key: 'onClickHandler',
+        value: function onClickHandler(item) {
+            var field = document.querySelector('[name="' + item.fieldName + '"]');
+
+            if (item.handler) {
+                item.handler();
+            } else if (field) {
+                field.focus();
+            }
+        }
+    }, {
         key: 'renderItem',
         value: function renderItem(item, i) {
-
-            var onClick = function onClick() {
-                document.querySelector('[name="' + item.fieldName + '"]').focus();
-            };
-
             return _react2['default'].createElement(
                 'span',
                 { key: i },
@@ -49,63 +51,37 @@ var FomaWarning = (function (_Component) {
                 _react2['default'].createElement(
                     'span',
                     {
-                        className: this.props.className ? this.props.className + '__item' : 'foma-warning__item',
-                        onClick: onClick },
+                        className: 'foma-warning__item',
+                        onClick: this.onClickHandler.bind(this, item) },
                     item.name
                 )
             );
-        }
-    }, {
-        key: 'detectClick',
-        value: function detectClick(e) {
-            var className = e.target.className;
-            var classNames = this.props.className ? [this.props.className, this.props.className + '__item'] : ['foma-warning', 'foma-warning__item'];
-            var isParent = className.indexOf(classNames[0]) > -1 || className.indexOf(classNames[1]) > -1;
-
-            if (!isParent && this.props.items.length) {
-                document.querySelector('[name="' + this.props.items[0].fieldName + '"]').focus();
-            }
-
-            this.setState({ visible: true });
         }
     }, {
         key: 'render',
         value: function render() {
             var _this = this;
 
-            var items = this.props.items;
-            var visible = this.props.hasOwnProperty('visible') ? this.props.visible : this.state.visible;
-
-            if (items.length && visible) {
+            var props = this.props;
+            if (props.items.length && props.visible) {
                 return _react2['default'].createElement(
                     'span',
-                    {
-                        className: this.props.className ? this.props.className + 'wrapper' : 'foma-warning-wrapper',
-                        onClick: this.detectClick.bind(this) },
-                    _react2['default'].createElement(
-                        'span',
-                        { className: this.props.className || 'foma-warning' },
-                        this.props.message || 'Необходимо указать:',
-                        ' ',
-                        items.map(function (item, i) {
-                            return _this.renderItem(item, i);
-                        })
-                    ),
-                    this.props.children
+                    { className: 'foma-warning' },
+                    props.message || 'Необходимо указать:',
+                    ' ',
+                    props.items.map(function (item, i) {
+                        return _this.renderItem(item, i);
+                    })
                 );
             }
 
-            return _react2['default'].createElement(
-                'span',
-                { onClick: this.detectClick.bind(this) },
-                this.props.children
-            );
+            return null;
         }
     }], [{
         key: 'propTypes',
         value: {
             items: PropTypes.array.isRequired,
-            visible: PropTypes.bool
+            visible: PropTypes.bool.isRequired
         },
         enumerable: true
     }, {
