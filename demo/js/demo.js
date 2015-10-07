@@ -189,9 +189,9 @@
 	        }
 	    }, {
 	        key: 'submitForm',
-	        value: function submitForm(e) {
+	        value: function submitForm(bool, e) {
 	            if (this.props.isInvalid) {
-	                this.setState({ fomaWarning: true });
+	                this.setState({ fomaWarning: bool ? Date.now() : bool });
 	            } else {
 	                alert('Form successfully send');
 	            }
@@ -312,7 +312,7 @@
 	                        {
 	                            type: 'submit',
 	                            className: 'btn btn-success' + (this.props.isInvalid ? ' disabled' : ''),
-	                            onClick: this.submitForm.bind(this) },
+	                            onClick: this.submitForm.bind(this, true) },
 	                        'Save'
 	                    ),
 	                    ' ',
@@ -21690,6 +21690,13 @@
 	            }
 	        }
 	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            if (nextProps.items && nextProps.items.length && nextProps.visible && nextProps.visible !== this.props.visible) {
+	                this.onClickHandler(nextProps.items[0]);
+	            }
+	        }
+	    }, {
 	        key: 'renderItem',
 	        value: function renderItem(item, i) {
 	            return _react2['default'].createElement(
@@ -21729,7 +21736,7 @@
 	        key: 'propTypes',
 	        value: {
 	            items: PropTypes.array.isRequired,
-	            visible: PropTypes.bool.isRequired
+	            visible: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]).isRequired
 	        },
 	        enumerable: true
 	    }, {

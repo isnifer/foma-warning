@@ -86,9 +86,9 @@ class Demo extends Component {
         this.setState({username: e.target.value});
     }
 
-    submitForm (e) {
+    submitForm (bool, e) {
         if (this.props.isInvalid) {
-            this.setState({fomaWarning: true});
+            this.setState({fomaWarning: bool ? Date.now() : bool});
         } else {
             alert('Form successfully send');
         }
@@ -189,7 +189,7 @@ class Demo extends Component {
                     <button
                         type="submit"
                         className={'btn btn-success' + (this.props.isInvalid ? ' disabled' : '')}
-                        onClick={::this.submitForm}>
+                        onClick={this.submitForm.bind(this, true)}>
                         Save
                     </button>
                     {' '}

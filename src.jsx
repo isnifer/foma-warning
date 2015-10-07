@@ -6,7 +6,9 @@ export default class FomaWarning extends Component {
 
     static propTypes = {
         items: PropTypes.array.isRequired,
-        visible: PropTypes.bool.isRequired
+        visible: PropTypes.oneOfType([
+            PropTypes.bool, PropTypes.number
+        ]).isRequired
     };
 
     static defaultProps = {
@@ -21,7 +23,16 @@ export default class FomaWarning extends Component {
         } else if (field) {
             field.focus();
         }
-    };
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if (
+            nextProps.items && nextProps.items.length &&
+            nextProps.visible && nextProps.visible !== this.props.visible
+        ) {
+            this.onClickHandler(nextProps.items[0]);
+        }
+    }
 
     renderItem (item, i) {
         return (

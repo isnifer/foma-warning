@@ -42,6 +42,13 @@ var FomaWarning = (function (_Component) {
             }
         }
     }, {
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            if (nextProps.items && nextProps.items.length && nextProps.visible && nextProps.visible !== this.props.visible) {
+                this.onClickHandler(nextProps.items[0]);
+            }
+        }
+    }, {
         key: 'renderItem',
         value: function renderItem(item, i) {
             return _react2['default'].createElement(
@@ -81,7 +88,7 @@ var FomaWarning = (function (_Component) {
         key: 'propTypes',
         value: {
             items: PropTypes.array.isRequired,
-            visible: PropTypes.bool.isRequired
+            visible: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]).isRequired
         },
         enumerable: true
     }, {
