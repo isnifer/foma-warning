@@ -21686,7 +21686,12 @@
 	            if (item.handler) {
 	                item.handler();
 	            } else if (field) {
-	                field.focus();
+
+	                // Ha-ha! Blink browsers can't fire focus
+	                // this hack helps fix it
+	                setTimeout(function () {
+	                    field.focus();
+	                }, 0);
 	            }
 	        }
 	    }, {
