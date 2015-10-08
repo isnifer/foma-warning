@@ -190,10 +190,10 @@
 	    }, {
 	        key: 'submitForm',
 	        value: function submitForm(bool, e) {
-	            if (this.props.isInvalid) {
-	                this.setState({ fomaWarning: bool ? Date.now() : bool });
+	            if (this.props.isValid) {
+	                alert('You\'re awesome');
 	            } else {
-	                alert('Form successfully send');
+	                this.props.foma.viewWarning(true);
 	            }
 
 	            return e.preventDefault();
@@ -222,7 +222,7 @@
 	                        {
 	                            value: this.state.company,
 	                            onEnd: function (isValid, message) {
-	                                _this.props.setValidationInfo({
+	                                _this.props.foma.setValidationInfo({
 	                                    isValid: isValid,
 	                                    message: message,
 	                                    name: 'company'
@@ -248,7 +248,7 @@
 	                        {
 	                            value: this.state.username,
 	                            onEnd: function (isValid, message) {
-	                                _this.props.setValidationInfo({
+	                                _this.props.foma.setValidationInfo({
 	                                    isValid: isValid,
 	                                    message: message,
 	                                    name: 'username'
@@ -274,7 +274,7 @@
 	                        {
 	                            value: this.state.browser,
 	                            onEnd: function (isValid, message) {
-	                                _this.props.setValidationInfo({
+	                                _this.props.foma.setValidationInfo({
 	                                    isValid: isValid,
 	                                    message: message,
 	                                    name: 'browser'
@@ -297,16 +297,20 @@
 	                _react2['default'].createElement(
 	                    'div',
 	                    { className: 'form-group' },
-	                    _react2['default'].createElement(_index2['default'], {
+	                    this.props.foma.renderWarning({
 	                        message: 'These fields are required:',
 	                        items: this.props.invalidFields.map(function (e) {
 	                            return {
 	                                fieldName: e,
 	                                name: requiredFields[e].name,
-	                                handler: requiredFields[e].handler || null
+	                                handler: requiredFields[e].handler
 	                            };
-	                        }),
-	                        visible: this.state.fomaWarning }),
+	                        })
+	                    })
+	                ),
+	                _react2['default'].createElement(
+	                    'div',
+	                    { className: 'form-group' },
 	                    _react2['default'].createElement(
 	                        'button',
 	                        {
@@ -21552,6 +21556,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _fomaWarning = __webpack_require__(238);
+
+	var _fomaWarning2 = _interopRequireDefault(_fomaWarning);
+
 	var Component = _react2['default'].Component;
 	var PropTypes = _react2['default'].PropTypes;
 
@@ -21571,14 +21579,19 @@
 	            _get(Object.getPrototypeOf(_class.prototype), 'constructor', this).call(this, props, context);
 
 	            this.state = {
+	                invalidFields: [],
+	                isInvalid: false,
 	                isValid: true,
 	                isValidating: false,
-	                isInvalid: false,
-	                invalidFields: []
+	                isWarnVisible: false
 	            };
 
 	            this.api = {
-	                setValidationInfo: this.setValidationInfo.bind(this)
+	                foma: {
+	                    setValidationInfo: this.setValidationInfo.bind(this),
+	                    viewWarning: this.viewWarning.bind(this),
+	                    renderWarning: this.renderWarning.bind(this)
+	                }
 	            };
 
 	            // I want to manage fields without re-render
@@ -21625,6 +21638,22 @@
 	                });
 	            }
 	        }, {
+	            key: 'viewWarning',
+	            value: function viewWarning(bool) {
+	                this.setState({ isWarnVisible: bool ? Date.now() : bool });
+	            }
+	        }, {
+	            key: 'renderWarning',
+	            value: function renderWarning(_ref) {
+	                var message = _ref.message;
+	                var items = _ref.items;
+
+	                return _react2['default'].createElement(_fomaWarning2['default'], {
+	                    message: message,
+	                    items: items,
+	                    visible: this.state.isWarnVisible });
+	            }
+	        }, {
 	            key: 'render',
 	            value: function render() {
 	                return _react2['default'].createElement(
@@ -21644,6 +21673,123 @@
 
 /***/ },
 /* 237 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var Component = _react2['default'].Component;
+	var PropTypes = _react2['default'].PropTypes;
+
+	var FomaWarning = (function (_Component) {
+	    _inherits(FomaWarning, _Component);
+
+	    function FomaWarning() {
+	        _classCallCheck(this, FomaWarning);
+
+	        _get(Object.getPrototypeOf(FomaWarning.prototype), 'constructor', this).apply(this, arguments);
+	    }
+
+	    _createClass(FomaWarning, [{
+	        key: 'onClickHandler',
+	        value: function onClickHandler(item) {
+	            var field = document.querySelector('[name="' + item.fieldName + '"]');
+
+	            if (item.handler) {
+	                item.handler();
+	            } else if (field) {
+
+	                // Ha-ha! Blink browsers can't fire focus
+	                // this hack helps fix it
+	                setTimeout(function () {
+	                    field.focus();
+	                }, 0);
+	            }
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            if (nextProps.items && nextProps.items.length && nextProps.visible && nextProps.visible !== this.props.visible) {
+	                this.onClickHandler(nextProps.items[0]);
+	            }
+	        }
+	    }, {
+	        key: 'renderItem',
+	        value: function renderItem(item, i) {
+	            return _react2['default'].createElement(
+	                'span',
+	                { key: i },
+	                i === 0 ? '' : ', ',
+	                _react2['default'].createElement(
+	                    'span',
+	                    {
+	                        className: 'foma-warning__item',
+	                        onClick: this.onClickHandler.bind(this, item) },
+	                    item.name
+	                )
+	            );
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this = this;
+
+	            var props = this.props;
+	            if (props.items.length && props.visible) {
+	                return _react2['default'].createElement(
+	                    'span',
+	                    { className: 'foma-warning' },
+	                    props.message || 'Необходимо указать:',
+	                    ' ',
+	                    props.items.map(function (item, i) {
+	                        return _this.renderItem(item, i);
+	                    })
+	                );
+	            }
+
+	            return null;
+	        }
+	    }], [{
+	        key: 'propTypes',
+	        value: {
+	            items: PropTypes.array.isRequired,
+	            visible: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]).isRequired
+	        },
+	        enumerable: true
+	    }, {
+	        key: 'defaultProps',
+	        value: {
+	            items: []
+	        },
+	        enumerable: true
+	    }]);
+
+	    return FomaWarning;
+	})(Component);
+
+	exports['default'] = FomaWarning;
+	module.exports = exports['default'];
+
+
+/***/ },
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

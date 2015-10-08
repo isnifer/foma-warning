@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Valya from 'valya';
 import Foma from 'foma';
 import FomaWarning from '../../index';
@@ -16,7 +15,7 @@ const requiredFields = {
     browser: {
         name: 'browser',
         handler: () => {
-            alert('Set your browser');
+            console.log('Set your browser');
         }
     }
 };
@@ -87,10 +86,10 @@ class Demo extends Component {
     }
 
     submitForm (bool, e) {
-        if (this.props.isValid) {
-            alert('You\'re awesome');
+        if (this.props.isInvalid) {
+            this.setState({fomaWarning: bool ? Date.now() : bool});
         } else {
-            this.props.foma.viewWarning(true);
+            console.log('Form successfully send');
         }
 
         return e.preventDefault();
@@ -122,6 +121,7 @@ class Demo extends Component {
                             type="text"
                             id="company"
                             name="company"
+                            ref="company"
                             placeholder={requiredFields.company.name}
                             className="form-control"
                             value={this.state.company}
@@ -144,6 +144,7 @@ class Demo extends Component {
                             type="text"
                             id="username"
                             name="username"
+                            ref="username"
                             placeholder={requiredFields.username.name}
                             className="form-control"
                             value={this.state.username}
@@ -190,6 +191,7 @@ class Demo extends Component {
                     <button
                         type="submit"
                         className={'btn btn-success' + (this.props.isInvalid ? ' disabled' : '')}
+                        ref="submit"
                         onClick={this.submitForm.bind(this, true)}>
                         Save
                     </button>
@@ -203,4 +205,5 @@ class Demo extends Component {
     }
 }
 
-ReactDOM.render(<Demo />, document.querySelector('.main'));
+
+export default Demo;
